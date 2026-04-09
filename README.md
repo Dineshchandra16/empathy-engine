@@ -34,6 +34,27 @@ Speech Output + Audio File
 - gTTS (MP3 generation)
 - Flask (web UI)
 
+## Installation
+
+### 1. Clone the repository
+git clone https://github.com/your-username/empathy-engine.git
+
+### 2. Navigate to project folder
+cd empathy-engine
+
+### 3. Create virtual environment (optional but recommended)
+python -m venv .venv
+
+### 4. Activate virtual environment
+Windows:
+.venv\Scripts\activate
+
+### 5. Install dependencies
+pip install -r requirements.txt
+
+### 6. Run the project
+python main.py
+
 ## Setup Instructions
 1) Clone and enter the project
 ```
