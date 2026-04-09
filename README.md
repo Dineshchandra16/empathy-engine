@@ -1,124 +1,66 @@
-# Empathy Engine: Emotion-Aware Text-to-Speech System
+# Empathy Engine
+Emotion-aware text-to-speech that turns text into expressive audio in one click.
 
-## Project Description
-Empathy Engine converts text into expressive speech by detecting emotion and modulating voice parameters. It combines an AI sentiment model with simple rules to keep speech human-like and responsive.
+## Overview
+Empathy Engine detects the emotional tone of text with a transformer model, applies simple overrides for key feelings (happy/angry), scales speech rate by confidence, and generates an MP3 you can play instantly in the browser or via CLI.
 
-## Features
-- Text input processing
-- Transformer-based emotion detection (Hugging Face `pipeline`)
-- Granular emotion mapping (Happy, Angry, Positive, Negative, Neutral)
-- Intensity-based speech rate adjustment
-- Real-time voice playback (CLI via `pyttsx3`, web via gTTS audio file)
-- Audio file generation (`static/output.mp3`)
-- Flask web interface (new)
-
-## How It Works
-```
-Text Input
-   ↓
-Emotion Detection (Transformer Model)
-   ↓
-Granular Emotion Logic
-   ↓
-Intensity Scaling
-   ↓
-Voice Parameter Mapping (Rate)
-   ↓
-Speech Output + Audio File
-```
-
-## Tech Stack
-- Python
-- Hugging Face Transformers
-- pyttsx3 (CLI voice)
-- gTTS (MP3 generation)
-- Flask (web UI)
-
-## Installation
-
-### 1. Clone the repository
+## Quickstart (Web UI)
+```bash
 git clone https://github.com/your-username/empathy-engine.git
-
-### 2. Navigate to project folder
 cd empathy-engine
-
-### 3. Create virtual environment (optional but recommended)
-python -m venv .venv
-
-### 4. Activate virtual environment
-Windows:
-.venv\Scripts\activate
-
-### 5. Install dependencies
+python -m venv .venv && .venv\Scripts\activate   # Windows
 pip install -r requirements.txt
-
-### 6. Run the project
-python main.py
-
-## Setup Instructions
-1) Clone and enter the project
-```
-git clone <your-repo-link>
-cd empathy-engine
-```
-
-2) Create and activate a virtual environment
-```
-python -m venv .venv
-.venv\Scripts\activate   # Windows PowerShell
-```
-
-3) Install dependencies
-```
-pip install textblob gtts pyttsx3 transformers torch flask
-```
-
-## Run the CLI app
-```
-python main.py
-```
-Enter text in the terminal to hear spoken output and save `output.mp3`.
-
-## Run the Flask web UI
-```
 python app.py
 ```
-Open http://127.0.0.1:5000 in your browser. The first request may download the sentiment model—wait until it finishes. Submit text to see:
-- Detected emotion with confidence
-- Derived speech rate
-- Audio player streaming `static/output.mp3`
+Open http://127.0.0.1:5000 and submit text. First run may download the sentiment model—wait for it to finish.
+
+## Requirements
+- Python 3.10+ recommended
+- Internet access for first model download and gTTS synthesis
+
+## Installation (detailed)
+1. Clone: `git clone https://github.com/your-username/empathy-engine.git`
+2. Enter folder: `cd empathy-engine`
+3. Create venv (recommended): `python -m venv .venv`
+4. Activate (Windows): `.venv\Scripts\activate`
+5. Install deps: `pip install -r requirements.txt`
+
+## Run
+- CLI demo: `python main.py` (prompts in terminal, saves `output.mp3`)
+- Flask web UI: `python app.py` (serves `static/output.mp3` for playback)
 
 ## Usage Flow (web)
 1. Type text in the textarea
 2. Click **Generate Voice**
-3. Page reloads showing the input, detected emotion, confidence, speech rate, and an audio player
+3. Page reloads showing input, detected emotion, confidence, derived speech rate, and an audio player streaming `static/output.mp3`
 
-## Web UI Snapshot
-The UI (dark gradient card) mirrors the Text → Emotion → Voice → Audio flow. It centers the form and results, shows your submitted text, emotion, confidence, speech rate, and provides an audio player for the generated file. The primary action is the “Generate Voice” button; results appear immediately below.
+## Features
+- Transformer-based sentiment via `pipeline("sentiment-analysis")`
+- Keyword overrides: “happy” → Happy, “angry” → Angry
+- Intensity-based speech rate mapping:
+  - Positive/Happy: `160 + int(score * 60)`
+  - Negative/Angry: `160 - int(score * 60)`
+  - Neutral: `160`
+- gTTS MP3 generation served from `/static/output.mp3`
+- Lightweight Flask UI with centered dark card layout
 
-## Example
-**Input:** `I am very happy today!`
+## Architecture (concept)
+```
+Text → Sentiment Model → Granular Emotion → Intensity Scaling → Rate Mapping → gTTS → output.mp3 → Browser Audio
+```
 
-**Output:**
-- Emotion: Positive / Happy
-- Faster speech rate
-- Generated audio file
+## UI Preview
+Dark gradient card with textarea, primary “Generate Voice” button, analysis block (emotion, confidence, speech rate), and embedded audio player reflecting the generated file.
 
-## Design Decisions
-1) Emotion detection upgraded from TextBlob to a transformer for better context.
-2) Keyword overrides improve granularity (`happy` → Happy, `angry` → Angry).
-3) Confidence score drives speech rate (stronger confidence → larger adjustment).
-4) Speech-rate mapping: Positive/Happy = faster, Negative/Angry = slower, Neutral = baseline.
+## Troubleshooting
+- Model download slow on first run: wait for completion, then refresh.
+- No audio: ensure `static/output.mp3` exists (generated after first POST).
+- gTTS requires internet; check connectivity if synthesis fails.
 
-## Limitations
-- Keyword overrides are simple.
-- Only rate is modulated (pitch unchanged).
-- gTTS needs internet access.
-
-## Future Improvements
-- Expand emotion set (e.g., surprise, concern).
-- Integrate richer TTS services (Google Cloud, ElevenLabs).
-- Fine-tune emotion model for domain data.
+## Roadmap
+- Broader emotion set (surprise, concern, etc.)
+- Pitch modulation in addition to rate
+- Optional cloud TTS backends (e.g., Google, ElevenLabs)
 
 ## Author
 Dinesh
